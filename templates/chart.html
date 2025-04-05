@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bitcoin Price Chart</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <h2>📈 Real-Time Bitcoin Price (USD & INR)</h2>
+  <canvas id="btcChart" width="600" height="300"></canvas>
+
+  <script>
+    // Fix: Wrap the JSON data in quotes and parse it as a JavaScript object
+    const dataFromBackend = JSON.parse('{{ prices | tojson | safe }}');
+    const labels = dataFromBackend.map(item => item.time);
+    const usdData = dataFromBackend.map(item => item.usd);
+    const inrData = dataFromBackend.map(item => item.inr);
+
+    const ctx = document.getElementById('btcChart').getContext('2d');
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'USD',
+            data: usdData,
+            borderColor: 'blue',
+            fill: false
+          },
+          {
+            label: 'INR',
+            data: inrData,
+            borderColor: 'green',
+            fill: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top' },
+          title: { display: true, text: 'Bitcoin Price (Live)' }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
